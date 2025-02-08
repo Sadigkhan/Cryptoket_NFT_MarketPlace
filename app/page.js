@@ -1,8 +1,11 @@
+import React from "react";
 
-export default function Home() {
+const Home = () => {
   return (
     <div>
-      <h1 className="text-3xl font-bold underline">Welcome to Cryptoket</h1>
+      <h1 className="text-3xl font-bold underline">Welcome to my world</h1>
     </div>
   );
-}
+};
+
+export default Home;
