@@ -47,7 +47,7 @@ const Footer = () => {
             <div className='mx-2 cursor-pointer' key={index}>
               <Image
                 src={image}
-                objectFit='contain'
+                style={{ objectFit: "contain" }}
                 width={24}
                 height={24}
                 alt='social'

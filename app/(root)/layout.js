@@ -3,7 +3,7 @@ const RootLayout = ({ children }) => {
     <main >
       <div>
         <section >
-          <div >{children}</div>
+          <div className="pt-[90px]">{children}</div>
         </section>
       </div>
     </main>

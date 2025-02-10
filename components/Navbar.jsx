@@ -98,7 +98,7 @@ const Navbar = () => {
           ? (
             <Image
               src={images.cross}
-              objectFit="contain"
+              style={{ objectFit: "contain" }}
               width={20}
               height={20}
               alt="close"
@@ -108,7 +108,7 @@ const Navbar = () => {
           ) : (
             <Image
               src={images.menu}
-              objectFit="contain"
+              style={{ objectFit: "contain" }}
               width={25}
               height={25}
               alt="menu"
