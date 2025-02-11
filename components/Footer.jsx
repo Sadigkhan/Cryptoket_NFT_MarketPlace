@@ -2,7 +2,7 @@
 import Image from 'next/image'
 import { useTheme } from "next-themes";
 
-import images from "../public/assets";
+import images from "@/public/assets";
 import Button from "./Button";
 
 const FooterLinks =({heading,items})=>(
@@ -15,7 +15,7 @@ const FooterLinks =({heading,items})=>(
 )
 
 const Footer = () => {
-
+  
   const { theme, setTheme } = useTheme();
 
   return (
@@ -51,7 +51,7 @@ const Footer = () => {
                 width={24}
                 height={24}
                 alt='social'
-                className={theme==="light"?"filter invert":undefined}
+                className={theme==="light"?"filter invert":""}
               />
             </div>
           ))}

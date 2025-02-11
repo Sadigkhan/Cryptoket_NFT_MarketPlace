@@ -6,19 +6,17 @@ import Script from "next/script";
 
 const RootLayout = ({ children }) => {
   return (
-    <html lang="en">
-      <body>
-        <ThemeProvider attribute="class">
-          <div className="dark:bg-nft-dark bg-white min-h-screen">
+    <html lang="en" suppressHydrationWarning>
+      <body className="min-h-screen">
+        <ThemeProvider attribute="class" defaultTheme="system" >
+          <div className="min-h-screen bg-white dark:bg-nft-dark">
             <Navbar />
-            <div >
-            {children}
-            </div>
+            <div>{children}</div>
             <Footer />
           </div>
           <Script
             src="https://kit.fontawesome.com/6f55973034.js"
-            crossorigin="anonymous"
+            crossOrigin="anonymous"
           />
         </ThemeProvider>
       </body>
