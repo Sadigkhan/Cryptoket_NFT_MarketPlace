@@ -7,8 +7,16 @@ import axios from "axios";
 import { MarketAddress,MarketAddressABI } from "./constants";
 
 export const NFTContext = React.createContext();
+
 export const NFTProvider=({children})=>{
-    const nftCurrency="MATIC";
+    
+    const [currentAccount,setCurrentAccount]=useState("");
+    const nftCurrency="ETH";
+
+    const checkIfWalletIsConnected=()=>{
+        if(!window.ethereum) return alert("Please install MetaMask")
+    }
+
     return(
         <NFTContext.Provider value={{nftCurrency}}>
             {children}
