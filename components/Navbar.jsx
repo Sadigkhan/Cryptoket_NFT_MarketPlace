@@ -2,6 +2,7 @@
 import { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
+import { NFTContext } from "@/context/NFTContext";
 import Image from "next/image";
 import Link from "next/link";
 import images from "@/public/assets";
@@ -42,8 +43,9 @@ const MenuItems = ({ isMobile, active, setActive }) => {
   );
 };
 const ButtonGroup = ({ setActive, router }) => {
-  const hasConnected = true;
-  return hasConnected ? (
+  const {connectWallet,currentAccount} =useContext(NFTContext)
+   
+  return currentAccount ? (
     <Button
       btnName="Create"
       classStyles="mx-2 rounded-xl"
@@ -56,10 +58,7 @@ const ButtonGroup = ({ setActive, router }) => {
     <Button
       btnName="Connect"
       classStyles="mx-2 rounded-xl"
-      handleClick={() => {
-        //   setActive('');
-        //   router.push('/create-nft');
-      }}
+      handleClick={connectWallet}
     />
   );
 };
