@@ -7,6 +7,7 @@ import { useTheme } from "next-themes";
 import Button from "@/components/Button";
 import images from "@/public/assets";
 import Input from "@/components/Input";
+import { NFTContext } from "@/context/NFTContext";
 
 const CreateNFT = () => {
   const { theme } = useTheme();
@@ -16,8 +17,14 @@ const CreateNFT = () => {
     name: "",
     description: "",
   });
-  const onDrop = useCallback(() => {
-    //upload image to the blockchain
+
+  const {uploadToPinata}=useContext(NFTContext)
+  const onDrop = useCallback(async (acceptedFile) => {
+    const url = await uploadToPinata(acceptedFile[0])
+
+    console.log({url})
+
+    setFileUrl(url)
   }, []);
 
   const {
