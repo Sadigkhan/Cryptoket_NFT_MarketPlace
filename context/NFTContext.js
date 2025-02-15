@@ -2,12 +2,14 @@
 import React, { useState, useEffect } from "react";
 import Web3Modal from "web3modal";
 import { ethers } from "ethers";
-import { uploadFileToPinata, uploadJSONToPinata } from "@/utils/pinata"; 
+import { uploadFileToPinata, uploadJSONToPinata } from "@/utils/pinata";
 import { MarketAddress, MarketAddressABI } from "./constants";
+import axios from "axios";
 
 export const NFTContext = React.createContext();
 
-const fetchContract=(signerOrProvider)=> new ethers.Contract(MarketAddress,MarketAddressABI,signerOrProvider);
+const fetchContract = (signerOrProvider) =>
+  new ethers.Contract(MarketAddress, MarketAddressABI, signerOrProvider);
 
 export const NFTProvider = ({ children }) => {
   const [currentAccount, setCurrentAccount] = useState("");
@@ -44,21 +46,46 @@ export const NFTProvider = ({ children }) => {
     return await uploadFileToPinata(file);
   };
 
-  const createSale = async (url,formInputPrice,isReselling,id) => {
+  const createSale = async (url, formInputPrice, isReselling, id) => {
     const web3modal = new Web3Modal();
-    const connection =await web3modal.connect();
-    const provider =new ethers.providers.Web3Provider(connection);
+    const connection = await web3modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
     const signer = provider.getSigner();
-    
-    const price= ethers.utils.parseUnits(formInputPrice,"ether");
+
+    const price = ethers.utils.parseUnits(formInputPrice, "ether");
     const contract = fetchContract(signer);
-    const listingPrice= await contract.getListingPrice();
+    const listingPrice = await contract.getListingPrice();
 
-    const transaction= await contract.createToken(url,price, {value:listingPrice.toString()});
+    const transaction = await contract.createToken(url, price, {
+      value: listingPrice.toString(),
+    });
     await transaction.wait();
+  };
 
+  const fetchNFTs = async () => {
+    const provider = new ethers.providers.JsonRpcProvider();
+    const contract = fetchContract(provider);
 
-  }
+    const data =await contract.fetchMarketItems();
+
+    const items = await Promise.all(data.map(async({tokenId,seller,owner,price:unformattedPrice})=>{
+      const tokenURI = await contract.tokenURI(tokenId);
+      const {data:{image,name,description}}= await axios.get(tokenURI);
+      const price = ethers.utils.formatUnits(unformattedPrice.toString(),"ether");
+
+      return {
+        price,
+        tokenId:tokenId.toNumber(),
+        seller,
+        owner,
+        image,
+        description,
+        name,
+        tokenURI
+      }
+    }))
+    return items;
+  };
 
   const createNFT = async (formInput, fileUrl, router) => {
     const { name, description, price } = formInput;
@@ -70,7 +97,7 @@ export const NFTProvider = ({ children }) => {
     try {
       const url = await uploadJSONToPinata(data);
       await createSale(url, price);
-      router.push('/');
+      router.push("/");
     } catch (error) {
       console.log("Error uploading to Pinata", error);
     }
@@ -78,7 +105,14 @@ export const NFTProvider = ({ children }) => {
 
   return (
     <NFTContext.Provider
-      value={{ nftCurrency, connectWallet, currentAccount, uploadToPinata, createNFT }}
+      value={{
+        nftCurrency,
+        connectWallet,
+        currentAccount,
+        uploadToPinata,
+        createNFT,
+        fetchNFTs
+      }}
     >
       {children}
     </NFTContext.Provider>
