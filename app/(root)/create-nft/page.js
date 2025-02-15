@@ -17,12 +17,14 @@ const CreateNFT = () => {
     name: "",
     description: "",
   });
+  const router = useRouter();
 
-  const {uploadToPinata}=useContext(NFTContext)
+  const {uploadToPinata,createNFT}=useContext(NFTContext)
+
   const onDrop = useCallback(async (acceptedFile) => {
     const url = await uploadToPinata(acceptedFile[0])
 
-    console.log({url})
+    // console.log({url})
 
     setFileUrl(url)
   }, []);
@@ -49,7 +51,7 @@ const CreateNFT = () => {
     [isDragActive, isDragAccept, isDragReject]
   );
 
-  console.log(formInput);
+  // console.log(formInput);
 
   return (
     <div className="flex justify-center sm:px-4 p-12">
@@ -124,7 +126,7 @@ const CreateNFT = () => {
           <Button
             btnName="Create NFT"
             className="rounded-xl"
-            handleClick={() => {}}
+            handleClick={() => createNFT(formInput,fileUrl,router)}
           />
         </div>
       </div>

@@ -2,11 +2,12 @@
 import React, { useState, useEffect } from "react";
 import Web3Modal from "web3modal";
 import { ethers } from "ethers";
-import axios from "axios";
-
+import { uploadFileToPinata, uploadJSONToPinata } from "@/utils/pinata"; 
 import { MarketAddress, MarketAddressABI } from "./constants";
 
 export const NFTContext = React.createContext();
+
+const fetchContract=(signerOrProvider)=> new ethers.Contract(MarketAddress,MarketAddressABI,signerOrProvider);
 
 export const NFTProvider = ({ children }) => {
   const [currentAccount, setCurrentAccount] = useState("");
@@ -39,38 +40,46 @@ export const NFTProvider = ({ children }) => {
     window.location.reload();
   };
 
+  const uploadToPinata = async (file) => {
+    return await uploadFileToPinata(file);
+  };
 
-const uploadToPinata = async (file) => {
-  try {
-    const apiKey = process.env.NEXT_PUBLIC_PINATA_API_KEY;
-    const apiSecret = process.env.NEXT_PUBLIC_PINATA_API_KEY_SECRET;
+  const createSale = async (url,formInputPrice,isReselling,id) => {
+    const web3modal = new Web3Modal();
+    const connection =await web3modal.connect();
+    const provider =new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    
+    const price= ethers.utils.parseUnits(formInputPrice,"ether");
+    const contract = fetchContract(signer);
+    const listingPrice= await contract.getListingPrice();
 
-    const formData = new FormData();
-    formData.append("file", file);
+    const transaction= await contract.createToken(url,price, {value:listingPrice.toString()});
+    await transaction.wait();
 
-    const response = await axios.post(
-      "https://api.pinata.cloud/pinning/pinFileToIPFS",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          pinata_api_key: apiKey,
-          pinata_secret_api_key: apiSecret,
-        },
-      }
-    );
 
-    const ipfsUrl = `https://gateway.pinata.cloud/ipfs/${response.data.IpfsHash}`;
-    return ipfsUrl;
-  } catch (error) {
-    console.error("Pinata yükleme hatası:", error);
-    return null;
   }
-};
 
+  const createNFT = async (formInput, fileUrl, router) => {
+    const { name, description, price } = formInput;
+
+    if (!name || !description || !price || !fileUrl) return;
+
+    const data = { name, description, image: fileUrl };
+
+    try {
+      const url = await uploadJSONToPinata(data);
+      await createSale(url, price);
+      router.push('/');
+    } catch (error) {
+      console.log("Error uploading to Pinata", error);
+    }
+  };
 
   return (
-    <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccount, uploadToPinata }}>
+    <NFTContext.Provider
+      value={{ nftCurrency, connectWallet, currentAccount, uploadToPinata, createNFT }}
+    >
       {children}
     </NFTContext.Provider>
   );
