@@ -17,7 +17,7 @@ const compat = new FlatCompat({
 
 export default [
   // Apply Next.js core web vitals config
-  ...compat.extends("next/core-web-vitals"),
+  ...compat.extends(["next/core-web-vitals"]),
 
   // Add your custom ESLint configuration
   {
@@ -34,11 +34,11 @@ export default [
         },
       },
     },
-    plugins: {
-      react: reactPlugin,
-      'jsx-a11y': jsxA11yPlugin,
-      import: importPlugin,
-    },
+    plugins: [
+      reactPlugin,
+      jsxA11yPlugin,
+      importPlugin,
+    ],
     rules: {
       'no-console': 'off',
       'jsx-a11y/label-has-associated-control': 'off',

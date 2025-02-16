@@ -14,7 +14,7 @@ const MenuItems = ({ isMobile, active, setActive }) => {
       case 0:
         return "/";
       case 1:
-        return "/created-nfts";
+        return "/listed-nfts";
       case 2:
         return "/my-nfts";
       default:
@@ -64,19 +64,12 @@ const ButtonGroup = ({ setActive, router }) => {
 };
 const Navbar = () => {
   const { theme, setTheme } = useTheme();
-  // const [mounted, setMounted] = useState(false);
 
   const router = useRouter();
   const [active, setActive] = useState("Explore NFTs");
   const [isOpen, setIsOpen] = useState(false);
 
-  // useEffect(() => {
-  //   if (typeof window !== "undefined") {
-  //     setMounted(true);
-  //   }
-  // }, []);
 
-  // if (!mounted) return null;
   return (
     <nav className="flexBetween w-full fixed z-10 p-4 flex-row border-b dark:bg-nft-dark bg-white dark:border-nft-black-1 border-nft-gray-1">
       <div className="flex flex-1 flex-row justify-start">

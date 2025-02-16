@@ -46,6 +46,22 @@ export const NFTProvider = ({ children }) => {
     return await uploadFileToPinata(file);
   };
 
+  const createNFT = async (formInput, fileUrl, router) => {
+    const { name, description, price } = formInput;
+
+    if (!name || !description || !price || !fileUrl) return;
+
+    const data = { name, description, image: fileUrl };
+
+    try {
+      const url = await uploadJSONToPinata(data);
+      await createSale(url, price);
+      router.push("/");
+    } catch (error) {
+      console.log("Error uploading to Pinata", error);
+    }
+  };
+
   const createSale = async (url, formInputPrice, isReselling, id) => {
     const web3modal = new Web3Modal();
     const connection = await web3modal.connect();
@@ -85,25 +101,43 @@ export const NFTProvider = ({ children }) => {
         tokenURI
       }
     }))
-    console.log(items)
+    // console.log(items)
     return items;
   };
 
-  const createNFT = async (formInput, fileUrl, router) => {
-    const { name, description, price } = formInput;
+  const fetchMyNFTsOrListedNFTs = async (type) =>{
+    const web3modal = new Web3Modal();
+    const connection = await web3modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
 
-    if (!name || !description || !price || !fileUrl) return;
+    const contract = fetchContract(signer);
 
-    const data = { name, description, image: fileUrl };
+    const data = type === "fetchItemsListed"
+      ? await contract.fetchitemsListed()
+      : await contract.fetchMyNFTs()
 
-    try {
-      const url = await uploadJSONToPinata(data);
-      await createSale(url, price);
-      router.push("/");
-    } catch (error) {
-      console.log("Error uploading to Pinata", error);
-    }
-  };
+      const items = await Promise.all(data.map(async({tokenId,seller,owner,price:unformattedPrice})=>{
+        const tokenURI = await contract.tokenURI(tokenId);
+        const {data:{image,name,description}}= await axios.get(tokenURI);
+        const price = ethers.utils.formatUnits(unformattedPrice.toString(),"ether");
+        
+  
+        return {
+          price,
+          tokenId:tokenId.toNumber(),
+          seller,
+          owner,
+          image,
+          description,
+          name,
+          tokenURI
+        }
+      }))
+      return items;
+  }
+  
+
 
   return (
     <NFTContext.Provider
@@ -113,7 +147,8 @@ export const NFTProvider = ({ children }) => {
         currentAccount,
         uploadToPinata,
         createNFT,
-        fetchNFTs
+        fetchNFTs,
+        fetchMyNFTsOrListedNFTs
       }}
     >
       {children}
