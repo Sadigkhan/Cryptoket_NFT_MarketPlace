@@ -20,7 +20,6 @@ const Home = () => {
   useEffect(()=>{
     fetchNFTs().then((items)=>{
       setNfts(items)
-      console.log(items)
     })
   },[])
 

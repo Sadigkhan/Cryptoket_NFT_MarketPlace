@@ -24,7 +24,6 @@ const CreateNFT = () => {
   const onDrop = useCallback(async (acceptedFile) => {
     const url = await uploadToPinata(acceptedFile[0])
 
-    // console.log({url})
 
     setFileUrl(url)
   }, []);
@@ -51,7 +50,6 @@ const CreateNFT = () => {
     [isDragActive, isDragAccept, isDragReject]
   );
 
-  // console.log(formInput);
 
   return (
     <div className="flex justify-center sm:px-4 p-12">
