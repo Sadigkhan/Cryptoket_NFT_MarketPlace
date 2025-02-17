@@ -79,10 +79,17 @@ export const NFTProvider = ({ children }) => {
   };
 
   const fetchNFTs = async () => {
-    const provider = new ethers.providers.JsonRpcProvider();
+
+    const url = process.env.NEXT_PUBLIC_ALCHEMY_API_URL;
+    console.log(url)
+    const provider = new ethers.providers.JsonRpcProvider(url);
+    console.log(provider)
+
+    // const provider = new ethers.providers.JsonRpcProvider("");
     const contract = fetchContract(provider);
 
     const data =await contract.fetchMarketItems();
+    console.log(data)
 
     const items = await Promise.all(data.map(async({tokenId,seller,owner,price:unformattedPrice})=>{
       const tokenURI = await contract.tokenURI(tokenId);
@@ -101,7 +108,7 @@ export const NFTProvider = ({ children }) => {
         tokenURI
       }
     }))
-    // console.log(items)
+    console.log(items)
     return items;
   };
 
