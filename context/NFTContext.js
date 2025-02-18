@@ -81,11 +81,8 @@ export const NFTProvider = ({ children }) => {
   const fetchNFTs = async () => {
 
     const url = process.env.NEXT_PUBLIC_ALCHEMY_API_URL;
-    console.log(url)
     const provider = new ethers.providers.JsonRpcProvider(url);
-    console.log(provider)
 
-    // const provider = new ethers.providers.JsonRpcProvider("");
     const contract = fetchContract(provider);
 
     const data =await contract.fetchMarketItems();
@@ -144,6 +141,17 @@ export const NFTProvider = ({ children }) => {
       return items;
   }
   
+  const buyNFT = async (nft) =>{
+    const web3modal = new Web3Modal();
+    const connection = await web3modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    const contract = fetchContract(signer);
+
+    const price = ethers.utils.parseUnits(nft.price.toString(), "ether");
+    const transaction  = await contract.createMarketSale(nft.tokenId,{value:price});
+    await transaction.wait()
+  }
 
 
   return (
@@ -155,7 +163,8 @@ export const NFTProvider = ({ children }) => {
         uploadToPinata,
         createNFT,
         fetchNFTs,
-        fetchMyNFTsOrListedNFTs
+        fetchMyNFTsOrListedNFTs,
+        buyNFT
       }}
     >
       {children}
