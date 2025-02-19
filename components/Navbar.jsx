@@ -65,10 +65,10 @@ const ButtonGroup = ({ setActive, router }) => {
 const Navbar = () => {
   const { theme, setTheme } = useTheme();
 
+
   const router = useRouter();
   const [active, setActive] = useState("Explore NFTs");
   const [isOpen, setIsOpen] = useState(false);
-
 
   return (
     <nav className="flexBetween w-full fixed z-10 p-4 flex-row border-b dark:bg-nft-dark bg-white dark:border-nft-black-1 border-nft-gray-1">
