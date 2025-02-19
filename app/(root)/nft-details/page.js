@@ -93,7 +93,7 @@ const NFTDetails = () => {
   const checkout = async () =>{
     await buyNFT(nft)
     setPaymentModal(false)
-    setSuccess(true)
+    setSuccessModal(true)
   }
 
   if (isLoading) return <Loader />;
