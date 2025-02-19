@@ -30,7 +30,7 @@ const NFTCard = ({ nft,onProfilePage }) => {
             {nft.price} <span className="normal">{nftCurrency}</span>{" "}
           </p>
           <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-xs minlg:text-lg">
-            {nft.seller.length>10?shortenAdress(onProfilePage ? nft.owner : nft.seller):nft.seller}
+            {shortenAdress(onProfilePage ? nft.owner : nft.seller)}
           </p>
         </div>
       </div>

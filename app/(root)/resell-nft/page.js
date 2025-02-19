@@ -11,7 +11,7 @@ const ResellNFT = () => {
   const {createSale} = useContext(NFTContext);
   const [nft, setNft] = useState({
     tokenId: "",
-    tokenURI: ""
+    tokenURI: "",
   });
   const [price,setPrice]=useState("")
   const [image,setImage]=useState("")
@@ -23,7 +23,7 @@ const ResellNFT = () => {
     if (!searchParams) return;
     const nftData = {
       tokenId: searchParams.get("tokenId"),
-      tokenURI: searchParams.get("tokenURI")
+      tokenURI: searchParams.get("tokenURI"),
     };
     setNft(nftData);
   }, [searchParams]);
@@ -36,7 +36,7 @@ const ResellNFT = () => {
     if (!nft.tokenURI) return;
     try {
       const {data} = await axios.get(nft.tokenURI);
-      console.log(data)
+      
       setPrice(data.price)
       setImage(data.image)
       setIsLoading(false)
