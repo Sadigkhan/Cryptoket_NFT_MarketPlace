@@ -3,7 +3,6 @@ import { useState, useEffect, useContext, Suspense } from "react";
 import { NFTContext } from "@/context/NFTContext";
 import { useSearchParams,useRouter } from "next/navigation";
 import Loader from "@/components/Loader";
-import NFTCard from "@/components/NFTCard";
 import Image from "next/image";
 import Button from "@/components/Button";
 import images from "@/public/assets";
