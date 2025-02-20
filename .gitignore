@@ -40,7 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-.secret
 node_modules
 .env
 coverage
@@ -50,3 +49,4 @@ typechain
 #Hardhat files
 cache
 artifacts
+.secret
