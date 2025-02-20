@@ -9,7 +9,7 @@ module.exports = {
   networks:{
     sepolia: {
       url: process.env.NEXT_ALCHEMY_API_URL,
-      accounts: [NEXT_Public_METAMASK_PRIVATE_KEY],
+      accounts: [process.env.NEXT_PUBLIC_METAMASK_PRIVATE_KEY],
     },
   },
   solidity: "0.8.4",

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, Suspense } from "react";
 import { NFTContext } from "@/context/NFTContext";
 import { useSearchParams,useRouter } from "next/navigation";
 import Loader from "@/components/Loader";
@@ -99,7 +99,8 @@ const NFTDetails = () => {
   if (isLoading) return <Loader />;
 
   return (
-    <div className="relative flex justify-center md:flex-col min-h-screen">
+    <Suspense fallback={<Loader/>}>
+<div className="relative flex justify-center md:flex-col min-h-screen">
       <div className="relative flex-1 flexCenter sm:px-4 p-12 border-r md:border-r-0 md:border-b dark:border-nft-black-1 border-nft-gray-1">
         <div className="realtive w-[557px] minmd:w-2/3 minmd:h-2/3 sm:w-full sm:h-[300px]">
           <Image
@@ -226,6 +227,8 @@ const NFTDetails = () => {
       
       
     </div>
+    </Suspense>
+    
   );
 };
 
