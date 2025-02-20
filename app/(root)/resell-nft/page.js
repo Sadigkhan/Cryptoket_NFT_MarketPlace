@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, Suspense } from 'react';
 import { NFTContext } from '@/context/NFTContext';
 import { useSearchParams,useRouter } from 'next/navigation';
 import Loader from '@/components/Loader';
@@ -57,7 +57,8 @@ const ResellNFT = () => {
   }
 
   return (
-    <div className='flex justify-center sm:px-4 p-12'>
+    <Suspense fallback={<Loader/>}>
+      <div className='flex justify-center sm:px-4 p-12'>
       <div className='w-3/5 md:w-full'>
         <h1 className='font-poppins dark:text-white text-nft-black-1 font-semibold text-2xl'>Resell NFT</h1>
         <Input inputType="number" title="Price" placeholder="NFT Price" handleClick={(e)=>setPrice(e.target.value)}/>
@@ -68,6 +69,7 @@ const ResellNFT = () => {
         </div>
       </div>
     </div>
+    </Suspense>
   );
 };
 
