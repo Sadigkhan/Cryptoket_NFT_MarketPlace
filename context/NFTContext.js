@@ -13,6 +13,7 @@ const fetchContract = (signerOrProvider) =>
 
 export const NFTProvider = ({ children }) => {
   const [currentAccount, setCurrentAccount] = useState("");
+  const [isLoadingNft, setIsLoadingNft] = useState(false)
   const nftCurrency = "ETH";
 
   const checkIfWalletIsConnected = async () => {
@@ -32,15 +33,25 @@ export const NFTProvider = ({ children }) => {
   }, []);
 
   const connectWallet = async () => {
-    if (!window.ethereum) return alert("Please install Metamask");
-
-    const accounts = await window.ethereum.request({
-      method: "eth_requestAccounts",
-    });
-
-    setCurrentAccount(accounts[0]);
-    window.location.reload();
+    if (!window.ethereum) return alert("Please install MetaMask");
+  
+    try {
+      const accounts = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
+  
+      setCurrentAccount(accounts[0]);
+      window.location.reload();
+    } catch (error) {
+      if (error.code === 4001) {
+        
+        alert("First connect to your MetaMask Wallet");
+      } else {
+        console.error("Error connecting wallet:", error);
+      }
+    }
   };
+  
 
   const uploadToPinata = async (file) => {
     return await uploadFileToPinata(file);
@@ -75,11 +86,13 @@ export const NFTProvider = ({ children }) => {
     const transaction= !isReselling
     ? await contract.createToken(url,price, {value:listingPrice.toString()})
     : await contract.resellToken(id,price,{value:listingPrice.toString()});
+
+    setIsLoadingNft(true)
     await transaction.wait();
   };
 
   const fetchNFTs = async () => {
-
+    setIsLoadingNft(false)
     const url = process.env.NEXT_PUBLIC_ALCHEMY_API_URL;
     const provider = new ethers.providers.JsonRpcProvider(url);
 
@@ -110,8 +123,10 @@ export const NFTProvider = ({ children }) => {
   };
 
   const fetchMyNFTsOrListedNFTs = async (type) =>{
+    setIsLoadingNft(false)
     const web3modal = new Web3Modal();
     const connection = await web3modal.connect();
+
     const provider = new ethers.providers.Web3Provider(connection);
     const signer = provider.getSigner();
 
@@ -150,7 +165,11 @@ export const NFTProvider = ({ children }) => {
 
     const price = ethers.utils.parseUnits(nft.price.toString(), "ether");
     const transaction  = await contract.createMarketSale(nft.tokenId,{value:price});
+
+    setIsLoadingNft(true)
     await transaction.wait()
+    setIsLoadingNft(false)
+
   }
 
 
@@ -165,7 +184,8 @@ export const NFTProvider = ({ children }) => {
         fetchNFTs,
         fetchMyNFTsOrListedNFTs,
         buyNFT,
-        createSale
+        createSale,
+        isLoadingNft
       }}
     >
       {children}

@@ -8,14 +8,13 @@ import Input from '@/components/Input';
 import axios from 'axios';
 
 const ResellNFT = () => {
-  const {createSale} = useContext(NFTContext);
+  const {createSale,isLoadingNft} = useContext(NFTContext);
   const [nft, setNft] = useState({
     tokenId: "",
     tokenURI: "",
   });
   const [price,setPrice]=useState("")
   const [image,setImage]=useState("")
-  const [isLoading,setIsLoading]=useState(true)
   const searchParams = useSearchParams();
   const router=useRouter()
 
@@ -39,7 +38,6 @@ const ResellNFT = () => {
       
       setPrice(data.price)
       setImage(data.image)
-      setIsLoading(false)
     } catch (error) {
       console.error("Error fetching NFT data:", error);
     }
@@ -50,7 +48,7 @@ const ResellNFT = () => {
     router.push("/")
   }
 
-  if(isLoading){
+  if(isLoadingNft){
     return (
       <div className='flexStart min-h-screen'>
         <Loader/>

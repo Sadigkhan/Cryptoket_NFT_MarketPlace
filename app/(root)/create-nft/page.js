@@ -8,6 +8,7 @@ import Button from "@/components/Button";
 import images from "@/public/assets";
 import Input from "@/components/Input";
 import { NFTContext } from "@/context/NFTContext";
+import Loader from "@/components/Loader";
 
 const CreateNFT = () => {
   const { theme } = useTheme();
@@ -19,7 +20,7 @@ const CreateNFT = () => {
   });
   const router = useRouter();
 
-  const {uploadToPinata,createNFT}=useContext(NFTContext)
+  const {uploadToPinata,createNFT,isLoadingNft}=useContext(NFTContext)
 
   const onDrop = useCallback(async (acceptedFile) => {
     const url = await uploadToPinata(acceptedFile[0])
@@ -50,6 +51,13 @@ const CreateNFT = () => {
     [isDragActive, isDragAccept, isDragReject]
   );
 
+  if (isLoadingNft) {
+    return (
+      <div className="flexStart min-h-screen">
+        <Loader />
+      </div>
+    );
+  }
 
   return (
     <div className="flex justify-center sm:px-4 p-12">
